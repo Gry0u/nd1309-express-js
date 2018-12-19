@@ -8,7 +8,7 @@ class BlockController {
 
     /**
      * Constructor to create a new BlockController, you need to initialize here all your endpoints
-     * @param {*} app 
+     * @param {*} app
      */
     constructor(app) {
         this.app = app;
@@ -23,7 +23,7 @@ class BlockController {
      */
     getBlockByIndex() {
         this.app.get("/api/block/:index", (req, res) => {
-            // Add your code here
+            res.send(this.blocks[req.params.index])
         });
     }
 
@@ -33,6 +33,11 @@ class BlockController {
     postNewBlock() {
         this.app.post("/api/block", (req, res) => {
             // Add your code here
+            let newBlock = new BlockClass.Block(req.body.data)
+            newBlock.height = this.blocks.length
+            newBlock.hash = SHA256(JSON.stringify(newBlock)).toString()
+            this.blocks.push(newBlock)
+            res.send('Block added: \n'+ JSON.stringify(newBlock))
         });
     }
 
@@ -54,6 +59,6 @@ class BlockController {
 
 /**
  * Exporting the BlockController class
- * @param {*} app 
+ * @param {*} app
  */
 module.exports = (app) => { return new BlockController(app);}
